@@ -73,10 +73,17 @@ def update_feed(db, feed=None, url=None):
     db.add(feed)
 
     for e in pf.get('entries', ()):
-        guid = e.get('id')
+        if not e:
+            continue
         entry = None
-        if guid:
-            entry = db.query(Entry).filter_by(feed=feed, guid=guid[:MAX_URL_LEN]).first()
+
+        guid = e.get('id', e.get('link', '') + '@' + e.get('published', ''))
+        if not guid:
+            LOG.error("update_feed: can't generate a ID for entry %r of feed %r",
+                      e, feed)
+            continue
+
+        entry = db.query(Entry).filter_by(feed=feed, guid=guid[:MAX_URL_LEN]).first()
         if not entry:
             entry = Entry(feed=feed)
         entry.guid = guid[:MAX_URL_LEN]
