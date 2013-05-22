@@ -103,3 +103,13 @@ class Subscription(Base):
 
     feed = relationship(Feed, backref='subscriptions')
     user = relationship(User, backref='subscriptions')
+
+class Unread(Base):
+    __tablename__ = 'unread'
+
+    id = Column(Integer, primary_key=True)
+    entry_id = Column(Integer, ForeignKey(Entry.id), nullable=False)
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+
+    entry = relationship(Entry, backref='unread')
+    user = relationship(User, backref='unread')
