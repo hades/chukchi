@@ -87,6 +87,7 @@ def update_feed(db, feed=None, url=None):
         if not entry:
             entry = Entry(feed=feed)
         entry.guid = guid[:MAX_URL_LEN]
+        entry.link = e.get('link', '')[:MAX_URL_LEN]
         entry.title = e.get('title', '')[:MAX_ENTRYTITLE_LEN]
         entry.published = make_datetime(e.get('published_parsed', entry.published))
         entry.updated = make_datetime(e.get('updated_parsed', entry.published))

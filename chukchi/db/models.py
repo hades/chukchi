@@ -71,6 +71,7 @@ class Entry(Base):
     id = Column(Integer, primary_key=True)
     feed_id = Column(Integer, ForeignKey(Feed.id), nullable=False)
     guid = Column(String(MAX_URL_LEN))
+    link = Column(String(MAX_URL_LEN))
     title = Column(String(MAX_ENTRYTITLE_LEN), nullable=False, default="")
     published = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
     updated = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
