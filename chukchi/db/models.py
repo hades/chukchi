@@ -58,6 +58,7 @@ class Feed(Base):
     last_update = Column(DateTime(timezone=True))
     json = Column(Text, nullable=False)
     active = Column(Boolean, nullable=False, default=True)
+    retrieved_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
 
     def __repr__(self):
         return '<Feed {}>'.format(self.id)
