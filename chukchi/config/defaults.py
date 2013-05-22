@@ -25,3 +25,5 @@ SECRET_KEY = 'N\xc6\x95&\xb2$\xdaeY\xea\xce\xa2\xba(\xbf\x94"\xb8\x0b\xb9\xfa\xc
 SITE_URL = "http://chukchi.hades.name"
 #TRAP_HTTP_EXCEPTIONS = True
 UPDATE_DELAY = {'minutes': 30}
+
+# vi: sw=4:ts=4:et

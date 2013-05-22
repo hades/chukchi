@@ -22,3 +22,5 @@ from ..config import config
 
 engine = create_engine(config.DATABASE, **config.DATABASE_ENGINE_CONFIG)
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# vi: sw=4:ts=4:et

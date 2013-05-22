@@ -55,3 +55,5 @@ def needs_session(f):
     return wrapper
 
 from . import endpoints
+
+# vi: sw=4:ts=4:et

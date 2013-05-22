@@ -18,3 +18,5 @@
 from . import defaults
 
 config = defaults
+
+# vi: sw=4:ts=4:et

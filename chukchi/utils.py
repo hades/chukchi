@@ -38,3 +38,5 @@ class CustomJSONEncoder(JSONEncoder):
 
 def json_dumps(o, *args, **kwargs):
     return CustomJSONEncoder(*args, **kwargs).encode(o)
+
+# vi: sw=4:ts=4:et

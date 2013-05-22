@@ -24,3 +24,5 @@ logging.basicConfig(format="%(asctime)-15s %(name)s: %(message)s",
                     level=logging.DEBUG if app.debug else logging.INFO)
 
 app.run(*sys.argv[1:])
+
+# vi: sw=4:ts=4:et

@@ -127,3 +127,5 @@ def update_feed(db, feed=None, url=None):
                 old_content.expired = True
                 db.add(old_content)
     return True
+
+# vi: sw=4:ts=4:et

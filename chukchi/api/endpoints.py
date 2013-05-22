@@ -47,3 +47,5 @@ def get_delete_session():
         session.clear()
         return {}
     return {'user': g.user.id}
+
+# vi: sw=4:ts=4:et

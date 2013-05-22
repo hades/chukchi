@@ -44,3 +44,5 @@ for feed in db_search.query(Feed).filter( Feed.active == True,
     except Exception, e:
         LOG.exception("failure updating feed %r", feed)
     db_update.remove()
+
+# vi: sw=4:ts=4:et

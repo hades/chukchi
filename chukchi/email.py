@@ -55,3 +55,5 @@ def send_email(from_, to, subject, text):
     except smtplib.SMTPException:
         LOG.exception("error sending email to %s", to)
         return False
+
+# vi: sw=4:ts=4:et

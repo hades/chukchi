@@ -47,3 +47,5 @@ def setup_json_handlers(app):
 def setup_rest_app(app):
     setup_json_handlers(app)
     app.response_class = JsonResponse
+
+# vi: sw=4:ts=4:et

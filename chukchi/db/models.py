@@ -114,3 +114,5 @@ class Unread(Base):
 
     entry = relationship(Entry, backref='unread')
     user = relationship(User, backref='unread')
+
+# vi: sw=4:ts=4:et
