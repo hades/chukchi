@@ -63,7 +63,7 @@ def update_feed(db, feed=None, url=None):
 
     pf_feed = pf.get('feed', None)
     if not pf_feed:
-        LOG.error("update_feed: feed is missing from parsed feed")
+        LOG.error("update_feed: feed is missing from parsed feed %r: %r", feed, pf)
         return False
 
     feed.title = pf_feed.get('title', '')[:MAX_FEEDNAME_LEN]
