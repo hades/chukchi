@@ -16,34 +16,11 @@
 # If you are unable to locate this file, see <http://www.gnu.org/licenses/>.
 
 import logging
+import sys
 
-from flask import abort, g, request, session
+from chukchi.api import app
 
-from . import app, db, needs_session
-from ..db.models import User
+logging.basicConfig(format="%(asctime)-15s %(name)s: %(message)s",
+                    level=logging.DEBUG if app.debug else logging.INFO)
 
-LOG = logging.getLogger(__name__)
-
-@app.errorhandler(KeyError)
-def no_key(e):
-    return {'error': 400,
-            'message': 'A field was missing from the request'}, 400
-
-@app.route('/session', methods=('POST',))
-def post_session():
-    user = db.query(User).first()
-    if not user:
-        user = User(email='', name='user')
-        db.add(user)
-        db.flush()
-        db.commit()
-    session['user'] = user.id # TODO implement auth
-    return {}
-
-@app.route('/session', methods=('GET', 'DELETE'))
-@needs_session
-def get_delete_session():
-    if request.method == 'DELETE':
-        session.clear()
-        return {}
-    return {'user': g.user.id}
+app.run(*sys.argv[1:])
