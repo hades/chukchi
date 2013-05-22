@@ -24,6 +24,8 @@ def now():
     return datetime.utcnow().replace(tzinfo=UTC)
 
 def make_datetime(time):
+    if time is None:
+        return None
     if isinstance(time, datetime):
         return time
     return datetime(*time[:6]).replace(tzinfo=UTC)

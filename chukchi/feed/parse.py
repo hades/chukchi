@@ -31,7 +31,7 @@ def parse_content(c, **kwargs):
     content = Content(**kwargs)
     content.type = c.get('type', 'text/plain')[:MAX_CONTENT_TYPE_LEN]
     content.data = c.get('value', '')
-    content.hash = hashlib.sha1(content.data).hexdigest()
+    content.hash = hashlib.sha1(content.data.encode('utf-8')).hexdigest()
     return content
 
 def update_feed(db, feed=None, url=None):
@@ -92,15 +92,15 @@ def update_feed(db, feed=None, url=None):
         actual_hashes = set()
         for c in e.get('content', ()):
             content = parse_content(c, entry=entry)
+            actual_hashes.add(content.hash)
             if content.hash in existing_hashes:
-                actual_hashes.add(content.hash)
                 continue
+            existing_hashes.add(content.hash)
             db.add(content)
         if 'summary_detail' in e:
             summary = parse_content(e.summary_detail, entry=entry, summary=True)
-            if summary.hash in existing_hashes:
-                actual_hashes.add(summary.hash)
-            else:
+            actual_hashes.add(summary.hash)
+            if summary.hash not in existing_hashes:
                 db.add(summary)
         for old_content in existing_content:
             if old_content.hash not in actual_hashes:
