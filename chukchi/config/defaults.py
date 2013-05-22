@@ -24,3 +24,4 @@ RECAPTCHA_PRIVATE_KEY = '6LexvQQAAAAAAGpvEirN0RReuwNtzJTlmF466PP1'
 SECRET_KEY = 'N\xc6\x95&\xb2$\xdaeY\xea\xce\xa2\xba(\xbf\x94"\xb8\x0b\xb9\xfa\xcf\xf8\xbe\x17\xdfMO\xe6W\x93\x8f/\xdc\xc8\x14\xc8\xe53E'
 SITE_URL = "http://chukchi.hades.name"
 #TRAP_HTTP_EXCEPTIONS = True
+UPDATE_DELAY = {'minutes': 30}
