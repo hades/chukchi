@@ -21,7 +21,7 @@ import time
 
 import feedparser
 
-from ..db.models import Content, Feed, Entry
+from ..db.models import Content, Feed, Entry, Subscription, Unread
 from ..db.models import MAX_CONTENT_TYPE_LEN, MAX_ENTRYTITLE_LEN, MAX_FEEDNAME_LEN, MAX_URL_LEN
 from ..utils import json_dumps, make_datetime, now
 
@@ -76,6 +76,7 @@ def update_feed(db, feed=None, url=None):
         if not e:
             continue
         entry = None
+        new_entry = True
 
         guid = e.get('id', e.get('link', '') + '@' + e.get('published', ''))
         if not guid:
@@ -86,6 +87,7 @@ def update_feed(db, feed=None, url=None):
         entry = db.query(Entry).filter_by(feed=feed, guid=guid[:MAX_URL_LEN]).first()
         if not entry:
             entry = Entry(feed=feed)
+            new_entry = False
         entry.guid = guid[:MAX_URL_LEN]
         entry.link = e.get('link', '')[:MAX_URL_LEN]
         entry.title = e.get('title', '')[:MAX_ENTRYTITLE_LEN]
@@ -94,6 +96,11 @@ def update_feed(db, feed=None, url=None):
         entry.retrieved_at = now()
         entry.json = json_dumps(e)
         db.add(entry)
+
+        if new_entry:
+# TODO: this should be replaced with INSERT INTO ... SELECT ... statement
+            for subscription in db.query(Subscription).filter_by(feed=feed):
+                db.add(Unread(entry=entry, user=subscription.user))
 
         existing_content = entry.content
         existing_hashes = set([c.hash for c in existing_content])
