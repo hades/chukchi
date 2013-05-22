@@ -44,17 +44,22 @@ def update_feed(db, feed=None, url=None):
     pf = feedparser.parse(feed.feed_url, etag=feed.http_etag, modified=feed.http_modified)
     status = pf.get('status', 555)
     LOG.debug("update_feed: status %s", status)
-    if status not in (200, 301, 302):
+    if status not in (200, 301, 302, 304):
         if status == 410:
             feed.active = False
             db.add(feed)
         LOG.error("update_feed: HTTP error %s on feed url %s", status, feed.feed_url)
         return False
 
+    feed.retrieved_at = now()
+
+    if status == 304: # not modified
+        db.add(feed)
+        return True
+
     if status == 301:
         LOG.info("update_feed: HTTP 301 on feed %r, %s -> %s", feed.id, feed.feed_url, pf.href)
         feed.feed_url = pf.href
-        db.add(feed)
 
     pf_feed = pf.get('feed', None)
     if not pf_feed:
