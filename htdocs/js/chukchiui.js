@@ -105,6 +105,9 @@ function makeFeedMenuItem(source) {
     if(typeof(source) == 'object') {
         var $item = $(".t .feedmenuselector").clone();
         $item.find('a').html(source.name);
+        $item.click(function(){
+            setSource(source);
+        });
         source.$menuitem = $item;
         return $item;
     }
@@ -125,6 +128,7 @@ function makeFeedSource(subscription) {
 function redrawEntries() {
     $(".page-header h1").hide();
     $(".page-header .loading").show();
+    $(".main.screen .entry").remove();
 
     var token = (new Date).getTime();
     UI.token = token;
