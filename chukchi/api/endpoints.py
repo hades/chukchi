@@ -103,4 +103,18 @@ def get_delete_session():
 def subscriptions():
     return {'data': [s.to_json() for s in g.user.subscriptions]}
 
+@app.route('/unread/<int:entry_id>', methods=('PUT', 'DELETE',))
+@needs_session
+def unread(entry_id):
+    entry = db.query(Entry).filter_by(id=entry_id).first()
+    if not entry:
+        abort(404)
+    unread_obj = db.query(Unread).filter_by(entry=entry, user=g.user).first()
+    if request.method == 'PUT' and not unread_obj:
+        db.add(Unread(entry=entry, user=g.user))
+    elif request.method == 'DELETE' and unread_obj:
+        db.delete(unread_obj)
+    db.commit()
+    return {}
+
 # vi: sw=4:ts=4:et
