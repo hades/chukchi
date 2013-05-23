@@ -71,6 +71,7 @@ function loadMoreEntries(count) {
         }
 
         $.each(entries, function(i, entry) {
+            entry.unread = entry.unread || UI.unread;
             var $entry = makeEntryBlock(entry);
             $entry.appendTo($(".main.screen"));
             UI.nextStartOffset = entry.id;
@@ -93,10 +94,16 @@ function makeEntryBlock(entry) {
         selectEntry($(this));
     });
 
+    if(entry.unread)
+        $entry.addClass('unread');
+
     Chukchi.getContent(entry.content[0], function(content) {
         // TODO handle non-html, handle summary and expired content
         $entry.find('.text').html(content.data);
     });
+
+    $entry.entry = entry;
+    entry.$block = $entry;
 
     return $entry;
 }
@@ -162,6 +169,17 @@ function selectEntry(entry) {
     $('body').animate({
         scrollTop: $entry.offset().top
     }, 200);
+    setUnread($entry.entry, false);
+}
+
+function setUnread(entry, flag) {
+    if(flag == entry.unread)
+        return;
+
+    Chukchi.setUnread(entry, !!flag);
+    entry.unread = !!flag;
+    entry.unread? entry.$block.addClass('unread')
+                : entry.$block.removeClass('unread');
 }
 
 function setSource(source) {
@@ -220,6 +238,13 @@ $(document).ready(function(){
         if(event.which == 107) { // k
             event.preventDefault();
             selectEntry(UI.selectedEntry - 1);
+            return;
+        }
+        if(event.which == 109) { // m
+            event.preventDefault();
+            var $entry = UI.entries[UI.selectedEntry];
+            if($entry)
+                setUnread($entry.entry, !$entry.entry.unread);
             return;
         }
         console.log("keypress: " + event.which);

@@ -144,6 +144,15 @@ Chukchi.login = function(openid) {
     });
 };
 
+Chukchi.setUnread = function(entry, flag) {
+    var id = entry;
+    if(typeof(entry) == 'object')
+        id = entry.id;
+    this._ajax('unread/' + id, {
+        method: flag? 'PUT' : 'DELETE',
+    });
+};
+
 Chukchi._makeHook('apierror');
 Chukchi._makeHook('auth');
 

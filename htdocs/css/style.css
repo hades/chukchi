@@ -39,6 +39,10 @@
     background: #eee;
 }
 
+.entry.unread .header {
+    font-weight: bold;
+}
+
 .nav-list {
     font-size: 12px;
 }
