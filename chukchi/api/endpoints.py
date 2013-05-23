@@ -22,7 +22,7 @@ from functools import wraps
 from flask import abort, g, request, session
 
 from . import app, db, needs_session
-from ..db.models import Entry, Subscription, Unread, User
+from ..db.models import Content, Entry, Subscription, Unread, User
 
 LOG = logging.getLogger(__name__)
 
@@ -32,6 +32,16 @@ MAX_ENTRY_COUNT = 500
 def no_key(e):
     return {'error': 400,
             'message': 'A field was missing from the request'}, 400
+
+@app.route('/content/<int:content_id>', methods=('GET',))
+@needs_session
+def content(content_id):
+    content = db.query(Content).filter_by(id=content_id).first()
+    if not content:
+        abort(404)
+    result = content.to_json()
+    result['data'] = content.data
+    return result
 
 def query_entries(f):
     @wraps(f)
