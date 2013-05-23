@@ -18,6 +18,8 @@
 !function($){
 
 UI = {
+    entries: [],
+    selectedEntry: -1,
     source: null,
     unread: true
 };
@@ -71,6 +73,7 @@ function loadMoreEntries(count) {
             var $entry = makeEntryBlock(entry);
             $entry.appendTo($(".main.screen"));
             UI.nextStartOffset = entry.id;
+            UI.entries.push($entry);
         });
 
         UI.scrollHandler = function(){ loadMoreEntries(10); };
@@ -84,6 +87,10 @@ function makeEntryBlock(entry) {
     $entry.find('.feed').html(entry.feed.title);
     $entry.find('.title').html(entry.title);
     $entry.find('.date').html(moment(entry.published).fromNow());
+
+    $entry.click(function(){
+        selectEntry($(this));
+    });
 
     Chukchi.getContent(entry.content[0], function(content) {
         // TODO handle non-html, handle summary and expired content
@@ -119,6 +126,8 @@ function redrawEntries() {
 
     var token = (new Date).getTime();
     UI.token = token;
+    UI.entries = [];
+    UI.selectedEntry = -1;
 
     UI.nextStartOffset = 0;
     loadMoreEntries(10);
@@ -126,6 +135,27 @@ function redrawEntries() {
 
 function reportError(err) {
     // TODO: error reporting
+}
+
+function selectEntry(entry) {
+    var index = entry;
+    if(typeof(entry) == 'object') {
+        index = UI.entries.indexOf(entry);
+    }
+
+    $(".main.screen .entry.selected").removeClass('selected');
+
+    if(index < 0 || index >= UI.entries.length)
+    {
+        UI.selectedEntry = -1;
+        return;
+    }
+    UI.selectedEntry = index;
+    var $entry = UI.entries[index];
+    $entry.addClass('selected');
+    $('body').animate({
+        scrollTop: $entry.offset().top
+    }, 200);
 }
 
 function setSource(source) {
@@ -161,7 +191,7 @@ $(document).ready(function(){
     Chukchi.apierror(reportError);
     Chukchi.auth(handleAuth);
 
-    $(window).scroll(function(){
+    $(window).scroll(function() {
         if(!UI.scrollHandler)
             return;
 
@@ -171,6 +201,19 @@ $(document).ready(function(){
 
         if( scrollTop + 200 > bodyHeight - windowHeight )
             UI.scrollHandler();
+    });
+    $(window).keypress(function(event) {
+        if(event.which == 106) { // j
+            event.preventDefault();
+            selectEntry(UI.selectedEntry + 1);
+            return;
+        }
+        if(event.which == 107) { // k
+            event.preventDefault();
+            selectEntry(UI.selectedEntry - 1);
+            return;
+        }
+        console.log("keypress: " + event.which);
     });
 
     Chukchi.init();
