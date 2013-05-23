@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8">
+  <title>Chukchi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/style.css" rel="stylesheet" media="screen">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/json2.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/chukchi.js"></script>
+  <script src="js/chukchiui.js"></script>
+ </head>
+ <body>
+  <div class="container-fluid">
+   <div class="row-fluid">
+    <div class="span3">
+     <div class="well sidebar-nav" id="navbar">
+      <ul class="nav nav-list">
+       <li class="nav-header no-feeds">(no feeds)</li>
+      </ul>
+     </div>
+    </div>
+
+    <div class="span9">
+     <div class="masthead">
+      <h2 class="muted">Chukchi <small>(not a reader)</small></h3>
+     </div>
+
+     <div class="well loading">
+      <h2 class="muted">Loading <img src="img/loader.gif"></h2>
+     </div>
+
+     <div class="login screen">
+      <div class="hero-unit">
+       <p>This is Chukchi, the free Web-based RSS aggregator.
+       <p>To continue, use your OpenID account to log in:
+        <form class="form-inline">
+         <div class="input-prepend">
+          <span class="add-on"><img src="img/openid.png"></span>
+          <input class="openid" type="text" placeholder="example.com">
+         </div>
+         <input type="submit" value="Log in" class="btn btn-primary">
+        </form>
+      </div>
+     </div>
+
+     <div class="main screen">
+      <div class="page-header">
+       <h1><span class="source-name"></span>: <small></small></h1>
+       <div class="well loading">
+        <h2 class="muted">Loading <img src="img/loader.gif"></h2>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- templates -->
+  <div class="t" style="display: none;">
+   <ul>
+    <li class="feedmenuselector"><a href="#"></a></li>
+    <li class="nav-header feedmenuseparator"></li>
+   </ul>
+   <div class="entry">
+    <div class="header">
+     <span class="feed label"></span>
+     <span class="title"></span>
+     <span class="date"></span>
+    </div>
+    <div class="text">
+    </div>
+   </div>
+  </div>
+ </body>
+<!-- vi: ts=1:sw=1:et
+-->
+</html>
