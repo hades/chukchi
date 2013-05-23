@@ -20,14 +20,37 @@ import logging
 from flask import abort, g, request, session
 
 from . import app, db, needs_session
-from ..db.models import User
+from ..db.models import Entry, Subscription, Unread, User
 
 LOG = logging.getLogger(__name__)
+
+MAX_ENTRY_COUNT = 500
 
 @app.errorhandler(KeyError)
 def no_key(e):
     return {'error': 400,
             'message': 'A field was missing from the request'}, 400
+
+@app.route('/entries', methods=('GET',))
+@needs_session
+def get_all_entries():
+    start = int(request.args.get('start', 0))
+    count = min(int(request.args.get('count', MAX_ENTRY_COUNT)), MAX_ENTRY_COUNT)
+    unread = bool(request.args.get('unread', False))
+
+    query = db.query(Entry)
+    if unread:
+        query = query.join(Unread, (Entry.id == Unread.entry_id) &\
+                                   (Unread.user_id == g.user.id))
+    else:
+        query = query.join(Subscription, (Entry.feed_id == Subscription.feed_id) &\
+                                         (Subscription.user_id == g.user.id))
+    query = query.order_by(Entry.id.desc())
+    LOG.debug("get_all_entries unread==%s SQL: %s", unread, query.statement)
+    total = query.count()
+    query = query.offset(start).limit(count)
+    return {'total': total,
+            'entries': [e.to_json() for e in query]}
 
 @app.route('/session', methods=('POST',))
 def post_session():
@@ -47,5 +70,10 @@ def get_delete_session():
         session.clear()
         return {}
     return {'user': g.user.id}
+
+@app.route('/subscriptions', methods=('GET',))
+@needs_session
+def subscriptions():
+    return {'data': [s.to_json() for s in g.user.subscriptions]}
 
 # vi: sw=4:ts=4:et

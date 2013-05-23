@@ -18,7 +18,7 @@
 from datetime import datetime
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import aliased, relationship
+from sqlalchemy.orm import aliased, deferred, relationship
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint
 from sqlalchemy.types import BigInteger, Boolean, DateTime, Enum, Integer, String, Text
 
@@ -56,7 +56,7 @@ class Feed(Base):
     http_modified = Column(String(MAX_ETAG_MODIFIED_LEN))
     added = Column(DateTime(timezone=True), default=datetime.now)
     last_update = Column(DateTime(timezone=True))
-    json = Column(Text, nullable=False)
+    json = deferred(Column(Text, nullable=False))
     active = Column(Boolean, nullable=False, default=True)
     retrieved_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
 
@@ -65,6 +65,15 @@ class Feed(Base):
 
     def __unicode__(self):
         return u"Feed {}".format(self.name)
+
+    def to_json(self):
+        return {'id': self.id,
+                'title': self.title,
+                'subtitle': self.subtitle,
+                'link': self.link,
+                'feed_url': self.feed_url,
+                'last_update': self.last_update,
+        }
 
 class Entry(Base):
     __tablename__ = 'entry'
@@ -77,9 +86,20 @@ class Entry(Base):
     published = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
     updated = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
     retrieved_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
-    json = Column(Text, nullable=False, default="")
+    json = deferred(Column(Text, nullable=False, default=""))
 
     feed = relationship(Feed, backref='entries')
+
+    def to_json(self):
+        return {'id': self.id,
+                'feed_id': self.feed_id,
+                'guid': self.guid,
+                'link': self.link,
+                'title': self.title,
+                'published': self.published,
+                'updated': self.updated,
+                'content': [c.to_json() for c in self.content],
+        }
 
 class Content(Base):
     __tablename__ = 'content'
@@ -91,9 +111,17 @@ class Content(Base):
     retrieved_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now)
     expired = Column(Boolean, nullable=False, default=False)
     summary = Column(Boolean, nullable=False, default=False)
-    data = Column(Text, nullable=False, default="")
+    data = deferred(Column(Text, nullable=False, default=""))
 
     entry = relationship(Entry, backref='content')
+
+    def to_json(self):
+        return {'id': self.id,
+                'type': self.type,
+                'hash': self.hash,
+                'expired': self.expired,
+                'summary': self.summary,
+        }
 
 class Subscription(Base):
     __tablename__ = 'subscription'
@@ -104,6 +132,11 @@ class Subscription(Base):
 
     feed = relationship(Feed, backref='subscriptions')
     user = relationship(User, backref='subscriptions')
+
+    def to_json(self):
+        return {'id': self.id,
+                'feed': self.feed.to_json(),
+        }
 
 class Unread(Base):
     __tablename__ = 'unread'

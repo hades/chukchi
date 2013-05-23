@@ -18,11 +18,13 @@
 from flask import json, jsonify, request, Response
 from werkzeug.exceptions import default_exceptions, HTTPException
 
+from ..utils import json_dumps
+
 class JsonResponse(Response):
     def __init__(self, response=None, *args, **kwargs):
         is_json = False
         if isinstance(response, dict):
-            response = json.dumps(response,
+            response = json_dumps(response,
                                   indent=None if request.is_xhr else 2)
             is_json = True
         super(JsonResponse, self).__init__(response, *args, **kwargs)

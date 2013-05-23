@@ -34,6 +34,8 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, struct_time):
             return strftime("%a, %d %b %Y %H:%M:%S +0000", o)
+        if isinstance(o, datetime):
+            return o.isoformat()
         return super(CustomJSONEncoder, self).default(o)
 
 def json_dumps(o, *args, **kwargs):
