@@ -59,6 +59,8 @@ function loadMoreEntries(count) {
         if(token != UI.token)
             return;
 
+        updateSourceInfo(total);
+
         if(!entries) {
             console.log("no more entries");
             UI.scrollHandler = null;
@@ -71,7 +73,6 @@ function loadMoreEntries(count) {
             UI.nextStartOffset = entry.id;
         });
 
-        updateSourceInfo(total);
         UI.scrollHandler = function(){ loadMoreEntries(10); };
         $(window).scroll();
     });
