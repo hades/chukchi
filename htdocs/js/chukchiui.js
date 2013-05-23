@@ -28,7 +28,8 @@ AllFeeds = {
     name: "All feeds",
     get: function(start, count, unread, callback) {
         Chukchi.getAllFeeds(start, count, unread, callback);
-    }
+    },
+    $menuitem: null
 };
 
 function handleAuth(data) {
@@ -45,8 +46,8 @@ function handleAuth(data) {
     }
     if(data.state == 2) { // logged in
         $(".main.screen").show();
-        setSource(AllFeeds);
         updateSubscriptions();
+        setSource(AllFeeds);
         return;
     }
 }
@@ -104,6 +105,7 @@ function makeFeedMenuItem(source) {
     if(typeof(source) == 'object') {
         var $item = $(".t .feedmenuselector").clone();
         $item.find('a').html(source.name);
+        source.$menuitem = $item;
         return $item;
     }
     var $item = $(".t .feedmenuseparator").clone();
@@ -160,6 +162,9 @@ function selectEntry(entry) {
 
 function setSource(source) {
     UI.source = source;
+    $("#navbar li.active").removeClass('active');
+    if(source.$menuitem)
+        source.$menuitem.addClass('active');
     redrawEntries();
 }
 
