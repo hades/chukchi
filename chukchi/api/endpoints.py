@@ -17,6 +17,8 @@
 
 import logging
 
+from functools import wraps
+
 from flask import abort, g, request, session
 
 from . import app, db, needs_session
@@ -31,26 +33,39 @@ def no_key(e):
     return {'error': 400,
             'message': 'A field was missing from the request'}, 400
 
+def query_entries(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        start = int(request.args.get('start', 0))
+        count = min(int(request.args.get('count', MAX_ENTRY_COUNT)), MAX_ENTRY_COUNT)
+        unread = bool(request.args.get('unread', False))
+
+        query = f(*args, **kwargs)
+        if unread:
+            query = query.join(Unread, (Entry.id == Unread.entry_id) &\
+                                       (Unread.user_id == g.user.id))
+        else:
+            query = query.join(Subscription, (Entry.feed_id == Subscription.feed_id) &\
+                                             (Subscription.user_id == g.user.id))
+        query = query.order_by(Entry.id.desc())
+        LOG.debug("query_entries f==%r unread==%s SQL: %s", f, unread, query.statement)
+        total = query.count()
+        query = query.offset(start).limit(count)
+        return {'total': total,
+                'entries': [e.to_json() for e in query]}
+    return wrapped
+
 @app.route('/entries', methods=('GET',))
 @needs_session
+@query_entries
 def get_all_entries():
-    start = int(request.args.get('start', 0))
-    count = min(int(request.args.get('count', MAX_ENTRY_COUNT)), MAX_ENTRY_COUNT)
-    unread = bool(request.args.get('unread', False))
+    return db.query(Entry)
 
-    query = db.query(Entry)
-    if unread:
-        query = query.join(Unread, (Entry.id == Unread.entry_id) &\
-                                   (Unread.user_id == g.user.id))
-    else:
-        query = query.join(Subscription, (Entry.feed_id == Subscription.feed_id) &\
-                                         (Subscription.user_id == g.user.id))
-    query = query.order_by(Entry.id.desc())
-    LOG.debug("get_all_entries unread==%s SQL: %s", unread, query.statement)
-    total = query.count()
-    query = query.offset(start).limit(count)
-    return {'total': total,
-            'entries': [e.to_json() for e in query]}
+@app.route('/entries/<int:feed_id>', methods=('GET',))
+@needs_session
+@query_entries
+def get_feed_entries(feed_id):
+    return db.query(Entry).filter_by(feed_id=feed_id)
 
 @app.route('/session', methods=('POST',))
 def post_session():
