@@ -20,11 +20,13 @@ from werkzeug.exceptions import default_exceptions, HTTPException
 
 class JsonResponse(Response):
     def __init__(self, response=None, *args, **kwargs):
+        is_json = False
         if isinstance(response, dict):
             response = json.dumps(response,
                                   indent=None if request.is_xhr else 2)
+            is_json = True
         super(JsonResponse, self).__init__(response, *args, **kwargs)
-        self.mimetype = 'application/json'
+        if is_json: self.mimetype = 'application/json'
 
     @classmethod
     def force_type(cls, rv, *args, **kwargs):
