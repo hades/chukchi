@@ -50,7 +50,9 @@ def query_entries(f):
         query = query.order_by(Entry.id.desc())
         LOG.debug("query_entries f==%r unread==%s SQL: %s", f, unread, query.statement)
         total = query.count()
-        query = query.offset(start).limit(count)
+        if start:
+            query = query.filter(Entry.id < start)
+        query = query.limit(count)
         return {'total': total,
                 'entries': [e.to_json() for e in query]}
     return wrapped

@@ -92,7 +92,7 @@ class Entry(Base):
 
     def to_json(self):
         return {'id': self.id,
-                'feed_id': self.feed_id,
+                'feed': self.feed.to_json(),
                 'guid': self.guid,
                 'link': self.link,
                 'title': self.title,
