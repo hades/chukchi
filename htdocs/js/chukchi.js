@@ -92,6 +92,17 @@ Chukchi.getAllFeeds = function(start, count, unread, callback) {
     });
 };
 
+Chukchi.getContent = function(content, callback) {
+    var id = content;
+    if(typeof(content) == 'object')
+        id = content.id;
+    this._ajax('content/' + id, {
+        success: function(result) {
+            callback(result);
+        }
+    });
+}
+
 Chukchi.getEntries = function(feed, start, count, unread, callback) {
     var id = feed;
     if(typeof(feed) == 'object')

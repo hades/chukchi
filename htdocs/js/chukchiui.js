@@ -85,6 +85,11 @@ function makeEntryBlock(entry) {
     $entry.find('.title').html(entry.title);
     $entry.find('.date').html(moment(entry.published).fromNow());
 
+    Chukchi.getContent(entry.content[0], function(content) {
+        // TODO handle non-html, handle summary and expired content
+        $entry.find('.text').html(content.data);
+    });
+
     return $entry;
 }
 
