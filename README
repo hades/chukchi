@@ -1,0 +1,94 @@
+ Chukchi
+=========
+
+What is Chukchi?
+----------------
+
+Chukchi is a free Web-based RSS aggregator.
+
+
+How do I run it?
+----------------
+
+To run Chukchi, you need:
+
+ * a database server (for example, Postgres),
+ * Python interpreter (for example, Python),
+ * some packages,
+ * clear head,
+ * steady hands.
+
+See below for the specific instructions.
+
+
+What are the needed packages?
+-----------------------------
+
+ * flask (version 0.8 or later)
+   http://pypi.python.org/pypi/Flask
+ * sqlalchemy (version 0.7.9 or later)
+   http://pypi.python.org/pypi/SQLAlchemy
+ * feedparser (version 5.1.2 or later)
+   http://pypi.python.org/pypi/feedparser
+ * pytz (as recent as is available)
+   http://pypi.python.org/pypi/pytz
+
+
+How do I set up the database?
+-----------------------------
+
+First, create a database. Default database name is chukchi, so for example:
+
+ $ createdb chukchi
+
+If you didn't use the default database name, edit the DATABASE variable in
+chukchi/config/defaults.py file.
+
+Then run the init_db.py file from the scripts directory to create the necessary
+tables:
+
+ $ PYTHONPATH=. python -m scripts.init_db
+
+
+Now how do I run Chukchi?
+-------------------------
+
+Now you can run Chukchi using the run.py script:
+
+ $ PYTHONPATH=. python -m scripts.run
+ 2013-05-23 11:21:00,881 werkzeug:  * Running on http://127.0.0.1:5000/
+ 2013-05-23 11:21:00,881 werkzeug:  * Restarting with reloader
+
+By default, this will launch a webserver on 127.0.0.1:5000. You can then open
+the following URL in your browser to access the Chukchi Web UI:
+
+ http://127.0.0.1:5000/static/index.html
+
+
+Is that it?
+-----------
+
+For now, yes.
+
+
+How do I contribute?
+--------------------
+
+Either fork this repository on github: https://github.com/hades/chukchi
+
+Or clone it directly with git:
+
+ git clone git://github.com/hades/chukchi.git
+
+and send me patches to:
+
+ chukchi-project@hades.name
+
+
+What is a modeline?
+-------------------
+
+Modeline is a line, that tells your text editor what to do with the file. For
+example:
+
+ vim: ft=markdown:tw=80:et
