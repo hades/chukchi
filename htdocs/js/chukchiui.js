@@ -82,7 +82,7 @@ function makeEntryBlock(entry) {
 
     $entry.find('.feed').html(entry.feed.title);
     $entry.find('.title').html(entry.title);
-    $entry.find('.date').html(entry.published);
+    $entry.find('.date').html(moment(entry.published).fromNow());
 
     return $entry;
 }
