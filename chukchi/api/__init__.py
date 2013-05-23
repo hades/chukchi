@@ -20,7 +20,7 @@ import logging
 from datetime import datetime, timedelta
 from functools import wraps
 
-from flask import Flask, abort, g, session
+from flask import Flask, abort, g, session, redirect
 from sqlalchemy.orm import scoped_session
 
 from .restutils import setup_rest_app
@@ -43,17 +43,26 @@ LOG = logging.getLogger(__name__)
 def shutdown_session(exception=None):
     db.remove()
 
+@app.before_request
+def init_user():
+    g.user = None
+
 def needs_session(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        user = db.query(User).filter_by(id=session['user']).first() \
-                if 'user' in session else None
+        user = db.query(User).filter_by(openid=session['openid']).first() \
+               if 'openid' in session else None
         if not user:
             abort(401)
         g.user = user
         return f(*args, **kwargs)
     return wrapper
 
+@app.route('/')
+def index():
+    return redirect('/static/index.html')
+
 from . import endpoints
+from . import openid
 
 # vi: sw=4:ts=4:et

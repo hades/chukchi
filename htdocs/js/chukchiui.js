@@ -38,10 +38,7 @@ function handleAuth(data) {
     if(data.state == 1) { // not logged in
         $(".login.screen").show();
         $(".login.screen .openid").focus();
-        $(".login.screen form").submit(function(event) {
-            event.preventDefault();
-            Chukchi.login($(".login.screen .openid").val());
-        });
+        $(".login.screen form").attr('action', Chukchi.loginUrl());
         return;
     }
     if(data.state == 2) { // logged in

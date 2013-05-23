@@ -79,17 +79,6 @@ def get_all_entries():
 def get_feed_entries(feed_id):
     return db.query(Entry).filter_by(feed_id=feed_id)
 
-@app.route('/session', methods=('POST',))
-def post_session():
-    user = db.query(User).first()
-    if not user:
-        user = User(email='', name='user')
-        db.add(user)
-        db.flush()
-        db.commit()
-    session['user'] = user.id # TODO implement auth
-    return {}
-
 @app.route('/session', methods=('GET', 'DELETE'))
 @needs_session
 def get_delete_session():

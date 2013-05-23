@@ -136,12 +136,8 @@ Chukchi.init = function() {
     this._getSession();
 };
 
-Chukchi.login = function(openid) {
-    this._ajax('session', {
-        method: 'POST',
-        data: {openid: openid},
-        success: Chukchi._getSession
-    });
+Chukchi.loginUrl = function() {
+    return APIURL + 'openid/login';
 };
 
 Chukchi.setUnread = function(entry, flag) {

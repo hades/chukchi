@@ -20,7 +20,7 @@ from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import aliased, deferred, relationship
 from sqlalchemy.schema import Column, ForeignKey, UniqueConstraint
-from sqlalchemy.types import BigInteger, Boolean, DateTime, Enum, Integer, String, Text
+from sqlalchemy.types import BigInteger, Binary, Boolean, DateTime, Enum, Integer, String, Text
 
 Base = declarative_base()
 
@@ -29,6 +29,10 @@ MAX_EMAIL_LEN = 120
 MAX_ENTRYTITLE_LEN = 255
 MAX_ETAG_MODIFIED_LEN = 64
 MAX_FEEDNAME_LEN = 255
+MAX_OPENID_ASSOC_TYPE_LEN = 64
+MAX_OPENID_HANDLE_LEN = 255
+MAX_OPENID_SALT_LEN = 40
+MAX_OPENID_SERVER_URL_LEN = 2047
 MAX_USERNAME_LEN = 80
 MAX_URL_LEN = 255
 
@@ -40,6 +44,7 @@ class User(Base):
     first_login = Column(DateTime(timezone=True), default=datetime.now)
     last_login = Column(DateTime(timezone=True))
     name = Column(String(MAX_USERNAME_LEN), nullable=False, default="")
+    openid = Column(String(MAX_URL_LEN))
 
     def __repr__(self):
         return '<User {}>'.format(self.id)
@@ -147,5 +152,31 @@ class Unread(Base):
 
     entry = relationship(Entry, backref='unread')
     user = relationship(User, backref='unread')
+
+class OpenIDAssociation(Base):
+    __tablename__ = 'openid_association'
+
+    id = Column(Integer, primary_key=True)
+    server_url = Column(String(MAX_OPENID_SERVER_URL_LEN), nullable=False)
+    handle = Column(String(MAX_OPENID_HANDLE_LEN), nullable=False)
+    secret = Column(Binary, nullable=False)
+    issued = Column(Integer, nullable=False)
+    lifetime = Column(Integer, nullable=False)
+    assoc_type = Column(String(MAX_OPENID_ASSOC_TYPE_LEN), nullable=False)
+
+    def copy_assoc(self, assoc):
+        self.handle = assoc.handle[:MAX_OPENID_HANDLE_LEN]
+        self.secret = assoc.secret
+        self.issued = assoc.issued
+        self.lifetime = assoc.lifetime
+        self.assoc_type = assoc.assoc_type[:MAX_OPENID_ASSOC_TYPE_LEN]
+
+class OpenIDNonce(Base):
+    __tablename__ = 'openid_nonce'
+
+    id = Column(Integer, primary_key=True)
+    server_url = Column(String(MAX_OPENID_SERVER_URL_LEN), nullable=False)
+    timestamp = Column(Integer, nullable=False)
+    salt = Column(String(MAX_OPENID_SALT_LEN), nullable=False)
 
 # vi: sw=4:ts=4:et
