@@ -81,7 +81,7 @@ def update_feed(db, feed=None, url=None):
         if not e:
             continue
         entry = None
-        new_entry = True
+        new_entry = False
 
         guid = e.get('id', e.get('link', '') + '@' + e.get('published', ''))
         if not guid:
@@ -92,7 +92,7 @@ def update_feed(db, feed=None, url=None):
         entry = db.query(Entry).filter_by(feed=feed, guid=guid[:MAX_URL_LEN]).first()
         if not entry:
             entry = Entry(feed=feed)
-            new_entry = False
+            new_entry = True
         entry.guid = guid[:MAX_URL_LEN]
         entry.link = e.get('link', '')[:MAX_URL_LEN]
         entry.title = e.get('title', '')[:MAX_ENTRYTITLE_LEN]
