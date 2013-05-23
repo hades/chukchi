@@ -17,9 +17,13 @@
 .entry .text {
     padding-top: 10px;
     padding-bottom: 20px;
+    max-width: 60em;
 }
 .entry .text p {
     text-indent: 20px;
+}
+.entry .text img {
+    max-width: none;
 }
 .entry .header {
     padding: 5px;
