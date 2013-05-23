@@ -19,4 +19,12 @@ from . import defaults
 
 config = defaults
 
+try:
+    import config_local
+    for key in config_local.__dict__:
+        if key.upper() == key:
+            setattr(config, key, getattr(config_local, key))
+except ImportError:
+    pass
+
 # vi: sw=4:ts=4:et
