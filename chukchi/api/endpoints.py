@@ -22,7 +22,9 @@ from functools import wraps
 from flask import abort, g, request, session
 
 from . import app, db, needs_session
+from ..config import config
 from ..db.models import Content, Entry, Subscription, Unread, User
+from ..feed.discover import discover
 
 LOG = logging.getLogger(__name__)
 
@@ -100,6 +102,33 @@ def subscriptions():
                                .count()
         result['data'].append(sj)
     return result
+
+@app.route('/subscriptions', methods=('POST',))
+@needs_session
+def post_subscriptions():
+    subscriptions_added = []
+    errors = []
+    for s in request.json.get('urls', ()):
+        feed = discover(db, s)
+        if not feed:
+            errors.append({'url': s,
+                           'error': 'No feed found at the given url'})
+            continue
+        if db.query(Subscription)\
+             .filter_by(user=g.user, feed=feed)\
+             .first():
+             errors.append({'url': s,
+                            'error': 'You are already subscribed to this feed'})
+             continue
+        db.add(Subscription(user=g.user, feed=feed))
+        for t in db.query(Entry).filter_by(feed=feed)\
+                   .order_by(Entry.id.desc())\
+                   .limit(config.UNREAD_ENTRIES_IN_NEW_FEEDS):
+            db.add(Unread(user=g.user, entry=t))
+        subscriptions_added.append(feed.to_json())
+    db.commit()
+    return {'subscriptions_added': subscriptions_added,
+            'errors': errors}
 
 @app.route('/unread/<int:entry_id>', methods=('PUT', 'DELETE',))
 @needs_session

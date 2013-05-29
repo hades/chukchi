@@ -15,13 +15,25 @@
 # Please see the file COPYING in the root directory of this project.
 # If you are unable to locate this file, see <http://www.gnu.org/licenses/>.
 
-DATABASE = 'postgresql:///chukchi'
-DATABASE_ENGINE_CONFIG = {}
-DEBUG = False
-FROM_EMAIL = 'no-reply@chukchi.hades.name'
-SECRET_KEY = 'N\xc6\x95&\xb2$\xdaeY\xea\xce\xa2\xba(\xbf\x94"\xb8\x0b\xb9\xfa\xcf\xf8\xbe\x17\xdfMO\xe6W\x93\x8f/\xdc\xc8\x14\xc8\xe53E'
-SITE_URL = "http://127.0.0.1:5000"
-UNREAD_ENTRIES_IN_NEW_FEEDS = 10
-UPDATE_DELAY = {'minutes': 30}
+import logging
+
+from ..db.models import Feed
+from .parse import update_feed
+
+LOG = logging.getLogger(__name__)
+
+def discover(db, url):
+    feed = db.query(Feed).filter_by(feed_url=url).first()
+    if feed: return feed
+
+    feed = update_feed(db, url=url)
+    if feed:
+        db.add(feed)
+        db.flush()
+        return feed
+    # TODO: discover feeds on HTML pages
+
+    LOG.error("discovery failed for url %s", url)
+    return None
 
 # vi: sw=4:ts=4:et

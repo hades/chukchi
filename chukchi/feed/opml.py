@@ -15,13 +15,14 @@
 # Please see the file COPYING in the root directory of this project.
 # If you are unable to locate this file, see <http://www.gnu.org/licenses/>.
 
-DATABASE = 'postgresql:///chukchi'
-DATABASE_ENGINE_CONFIG = {}
-DEBUG = False
-FROM_EMAIL = 'no-reply@chukchi.hades.name'
-SECRET_KEY = 'N\xc6\x95&\xb2$\xdaeY\xea\xce\xa2\xba(\xbf\x94"\xb8\x0b\xb9\xfa\xcf\xf8\xbe\x17\xdfMO\xe6W\x93\x8f/\xdc\xc8\x14\xc8\xe53E'
-SITE_URL = "http://127.0.0.1:5000"
-UNREAD_ENTRIES_IN_NEW_FEEDS = 10
-UPDATE_DELAY = {'minutes': 30}
+from xml.etree.ElementTree import XML
+
+def get_feed_urls(opml):
+    xml = XML(opml)
+    for outline in xml.find('outline'):
+        if outline.get('type') in ('rss', 'rss1', 'atom'):
+            url = outline.get('xmlUrl')
+            if url:
+                yield url
 
 # vi: sw=4:ts=4:et
