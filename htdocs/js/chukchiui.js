@@ -88,7 +88,7 @@ function makeEntryBlock(entry) {
     $entry.find('.date').html(moment(entry.published).fromNow());
 
     $entry.click(function(){
-        selectEntry($(this));
+        selectEntry($entry);
     });
 
     if(entry.unread)
