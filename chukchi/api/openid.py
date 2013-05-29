@@ -96,6 +96,9 @@ openid = OpenID(app, store_factory=lambda: SQLAlchemyStore(db))
 @app.route('/openid/login', methods=('GET', 'POST'))
 @openid.loginhandler
 def login():
+    if app.debug and app.config.get('DEBUG_OVERRIDE_USER'):
+        g.user = db.query(User).filter_by(id=app.config.get('DEBUG_OVERRIDE_USER')).first()
+        if g.user: session['openid'] = g.user.openid
     if g.user is not None:
         return redirect('/')
     if request.method == 'POST':
