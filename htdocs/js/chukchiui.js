@@ -112,6 +112,11 @@ function makeFeedMenuItem(source) {
         $item.click(function(){
             setSource(source);
         });
+        if(source.unreadCount)
+        {
+            $("<span>").html(' (' + source.unreadCount + ')').appendTo($item.find('a'));
+            $item.addClass('unread');
+        }
         source.$menuitem = $item;
         return $item;
     }
@@ -123,6 +128,7 @@ function makeFeedMenuItem(source) {
 function makeFeedSource(subscription) {
     return {
         name: subscription.feed.title,
+        unreadCount: subscription.unread_count,
         get: function(start, count, unread, callback) {
             Chukchi.getEntries(subscription.feed, start, count, unread, callback);
         }

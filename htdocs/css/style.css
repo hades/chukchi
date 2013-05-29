@@ -59,4 +59,8 @@ a {
     padding-top: 2px;
 }
 
+.feedmenuselector.unread {
+    font-weight: bold;
+}
+
 // vi: sw=4:ts=4:et
