@@ -90,7 +90,16 @@ def get_delete_session():
 @app.route('/subscriptions', methods=('GET',))
 @needs_session
 def subscriptions():
-    return {'data': [s.to_json() for s in g.user.subscriptions]}
+    result = {'data': []}
+    for s in g.user.subscriptions:
+        sj = s.to_json()
+        sj['unread_count'] = db.query(Entry)\
+                               .filter_by(feed=s.feed)\
+                               .join(Unread, (Entry.id == Unread.entry_id) &\
+                                             (Unread.user_id == g.user.id))\
+                               .count()
+        result['data'].append(sj)
+    return result
 
 @app.route('/unread/<int:entry_id>', methods=('PUT', 'DELETE',))
 @needs_session
