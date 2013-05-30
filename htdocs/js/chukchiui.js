@@ -36,12 +36,14 @@ function handleAuth(data) {
     $(".loading").remove();
     $(".screen").hide();
     if(data.state == 1) { // not logged in
+        $("#navbar").hide();
         $(".login.screen").show();
         $(".login.screen .openid").focus();
         $(".login.screen form").attr('action', Chukchi.loginUrl());
         return;
     }
     if(data.state == 2) { // logged in
+        $("#navbar").show();
         $(".main.screen").show();
         updateSubscriptions();
         setSource(AllFeeds);
