@@ -49,13 +49,13 @@ def update_feed(db, feed=None, url=None):
             feed.active = False
             db.add(feed)
         LOG.error("update_feed: HTTP error %s on feed url %s", status, feed.feed_url)
-        return False
+        return None
 
     feed.retrieved_at = now()
 
     if status == 304: # not modified
         db.add(feed)
-        return True
+        return feed
 
     if status == 301:
         LOG.info("update_feed: HTTP 301 on feed %r, %s -> %s", feed.id, feed.feed_url, pf.href)
@@ -64,7 +64,7 @@ def update_feed(db, feed=None, url=None):
     pf_feed = pf.get('feed', None)
     if not pf_feed:
         LOG.error("update_feed: feed is missing from parsed feed %r: %r", feed, pf)
-        return False
+        return None
 
     feed.title = pf_feed.get('title', '')[:MAX_FEEDNAME_LEN]
     feed.subtitle = pf_feed.get('subtitle', '')[:MAX_FEEDNAME_LEN]
@@ -126,6 +126,6 @@ def update_feed(db, feed=None, url=None):
             if old_content.hash not in actual_hashes:
                 old_content.expired = True
                 db.add(old_content)
-    return True
+    return feed
 
 # vi: sw=4:ts=4:et
