@@ -78,6 +78,14 @@ Chukchi._runHooks = function(hookname, data) {
     });
 };
 
+Chukchi.addFeeds = function(feeds, callback) {
+    this._ajax('subscriptions', {
+        method: 'POST',
+        data: {urls: feeds},
+        success: callback
+    });
+};
+
 Chukchi.getAllFeeds = function(start, count, unread, callback) {
     this._ajax('entries', {
         data: {start: start,

@@ -197,6 +197,21 @@ function setSource(source) {
     redrawEntries();
 }
 
+function setupFeedAdder() {
+    $("a.add-feed").click(function(event) {
+        event.preventDefault();
+        $(".feed-adder").show();
+    });
+    $(".feed-adder form").submit(function(event) {
+        event.preventDefault();
+        var url = $(this).find('input.url').val();
+        if(url && url.length)
+            Chukchi.addFeeds([url], function(){
+                updateSubscriptions();
+            });
+    });
+}
+
 function updateSourceInfo(totalEntries) {
     $(".main.screen .loading").hide();
     var $header = $(".main.screen .page-header");
@@ -225,6 +240,7 @@ $(document).ready(function(){
     Chukchi.apierror(reportError);
     Chukchi.auth(handleAuth);
 
+    setupFeedAdder();
     $(window).scroll(function() {
         if(!UI.scrollHandler)
             return;
