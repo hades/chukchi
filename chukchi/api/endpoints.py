@@ -19,12 +19,13 @@ import logging
 
 from functools import wraps
 
-from flask import abort, g, request, session
+from flask import abort, g, redirect, request, session
 
 from . import app, db, needs_session
 from ..config import config
 from ..db.models import Content, Entry, Subscription, Unread, User
 from ..feed.discover import discover
+from ..feed.opml import get_feed_urls
 
 LOG = logging.getLogger(__name__)
 
@@ -108,9 +109,21 @@ def subscriptions():
 def post_subscriptions():
     subscriptions_added = []
     errors = []
-    for s in request.json.get('urls', ()):
+    urls = []
+    if request.json:
+        urls += request.json.get('urls', [])
+    for file in request.files:
+        try:
+            for url in get_feed_urls(request.files[file].read()):
+                urls.append(url)
+        except Exception, e:
+            LOG.exception("error parsing incoming file %s", file)
+            errors.append({'file': file,
+                           'error': unicode(e)})
+    for s in urls:
         feed = discover(db, s)
         if not feed:
+            LOG.error("no feed found at url %s", s)
             errors.append({'url': s,
                            'error': 'No feed found at the given url'})
             continue
@@ -119,6 +132,7 @@ def post_subscriptions():
              .first():
              errors.append({'url': s,
                             'error': 'You are already subscribed to this feed'})
+             LOG.error("user %s is already subscribed to feed %s", g.user, s)
              continue
         db.add(Subscription(user=g.user, feed=feed))
         for t in db.query(Entry).filter_by(feed=feed)\
@@ -127,8 +141,11 @@ def post_subscriptions():
             db.add(Unread(user=g.user, entry=t))
         subscriptions_added.append(feed.to_json())
     db.commit()
-    return {'subscriptions_added': subscriptions_added,
-            'errors': errors}
+    if request.json:
+        return {'subscriptions_added': subscriptions_added,
+                'errors': errors}
+    else:
+        return redirect('/')
 
 @app.route('/unread/<int:entry_id>', methods=('PUT', 'DELETE',))
 @needs_session

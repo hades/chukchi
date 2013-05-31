@@ -17,12 +17,20 @@
 
 from xml.etree.ElementTree import XML
 
+import logging
+
+LOG = logging.getLogger(__name__)
+
 def get_feed_urls(opml):
+    LOG.debug("parsing OPML: %s", opml)
     xml = XML(opml)
-    for outline in xml.find('outline'):
-        if outline.get('type') in ('rss', 'rss1', 'atom'):
-            url = outline.get('xmlUrl')
-            if url:
-                yield url
+    if xml is not None:
+        outlines = xml.iter('outline')
+        if outlines:
+            for outline in outlines:
+                if outline.get('type') in ('rss', 'rss1', 'atom'):
+                    url = outline.get('xmlUrl')
+                    if url:
+                        yield url
 
 # vi: sw=4:ts=4:et
