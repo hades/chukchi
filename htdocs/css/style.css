@@ -63,4 +63,10 @@ a {
     font-weight: bold;
 }
 
+footer {
+    width: 100%;
+    font-size: 11px;
+    text-align: center;
+}
+
 // vi: sw=4:ts=4:et
