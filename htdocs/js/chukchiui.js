@@ -178,7 +178,7 @@ function selectEntry(entry) {
     UI.selectedEntry = index;
     var $entry = UI.entries[index];
     $entry.addClass('selected');
-    $('body').animate({
+    $('body,html').animate({
         scrollTop: $entry.offset().top
     }, 200);
     setUnread($entry.entry, false);
