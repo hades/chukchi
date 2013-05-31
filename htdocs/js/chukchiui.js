@@ -208,6 +208,7 @@ function setupFeedAdder() {
         if(url && url.length)
             Chukchi.addFeeds([url], function(){
                 updateSubscriptions();
+                $(".feed-adder form input.url").val('');
             });
     });
 }
