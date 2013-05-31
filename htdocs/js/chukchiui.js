@@ -39,7 +39,11 @@ function handleAuth(data) {
         $("#navbar").hide();
         $(".login.screen").show();
         $(".login.screen .openid").focus();
-        $(".login.screen form").attr('action', Chukchi.loginUrl());
+        var $form = $(".login.screen form");
+        $form.attr('action', Chukchi.loginUrl());
+        $form.find('.openid-google').click(function(){
+            $form.find('.openid').val('https://www.google.com/accounts/o8/id');
+        });
         return;
     }
     if(data.state == 2) { // logged in
