@@ -6,6 +6,17 @@ What is Chukchi?
 
 Chukchi is a free Web-based RSS aggregator.
 
+You can try it out here: http://chukchi.hades.name
+
+
+Who runs it?
+------------
+
+ * me: http://chukchi.hades.name (currently free for everyone).
+
+If you want to add your instance to this list, please create a pull request, or
+send me an email.
+
 
 How do I run it?
 ----------------
@@ -65,6 +76,16 @@ By default, this will launch a webserver on 127.0.0.1:5000. You can then open
 the following URL in your browser to access the Chukchi Web UI:
 
  http://127.0.0.1:5000/static/index.html
+
+
+Are there keyboard shortcuts?
+-----------------------------
+
+Sure:
+
+ * j -- go to next entry in the current list,
+ * k -- go to previous entry in the current list,
+ * m -- mark the currently selected entry as read/unread.
 
 
 Is that it?
