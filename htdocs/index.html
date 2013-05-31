@@ -60,6 +60,7 @@
          </div>
          <input type="submit" value="Log in" class="btn btn-primary">
         </form>
+       <p>Once inside, you can import your OPML subscriptions from your old aggregator.
       </div>
      </div>
 
@@ -68,6 +69,15 @@
        <h1><span class="source-name"></span>: <small></small></h1>
        <div class="well loading">
         <h2 class="muted">Loading <img src="img/loader.gif"></h2>
+       </div>
+       <div class="hero-unit no-entries" style="display: none;">
+        <p>You don't seem to have any new entries to read.
+        <p>Perhaps you want to subscribe to something new? Then just use "add feed" link on the left.
+        <p>Or, you can upload your OPML subscription list using the form below:
+        <form class="form-inline" action="." method="POST" enctype="multipart/form-data">
+         <input class="file" type="file" name="file">
+         <input type="submit" value="Import subscriptions" class="btn btn-primary">
+        </form>
        </div>
       </div>
      </div>

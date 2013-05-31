@@ -148,6 +148,10 @@ Chukchi.loginUrl = function() {
     return APIURL + 'openid/login';
 };
 
+Chukchi.postOpmlUrl = function() {
+    return APIURL + 'subscriptions';
+};
+
 Chukchi.setUnread = function(entry, flag) {
     var id = entry;
     if(typeof(entry) == 'object')

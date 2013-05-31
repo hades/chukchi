@@ -45,6 +45,7 @@ function handleAuth(data) {
     if(data.state == 2) { // logged in
         $("#navbar").show();
         $(".main.screen").show();
+        $(".main.screen .no-entries form").attr('action', Chukchi.postOpmlUrl());
         updateSubscriptions();
         setSource(AllFeeds);
         return;
@@ -191,6 +192,7 @@ function setUnread(entry, flag) {
 
 function setSource(source) {
     UI.source = source;
+    $(".no-entries").hide();
     $("#navbar li.active").removeClass('active');
     if(source.$menuitem)
         source.$menuitem.addClass('active');
@@ -221,6 +223,10 @@ function updateSourceInfo(totalEntries) {
     $header.find('small').html(totalEntries
                                + (UI.unread? ' new items' : ' items'));
     $header.find('h1').show();
+
+    if(!totalEntries) {
+        $(".no-entries").show();
+    }
 }
 
 function updateSubscriptions() {
