@@ -252,25 +252,31 @@ $(document).ready(function(){
         if( scrollTop + 200 > bodyHeight - windowHeight )
             UI.scrollHandler();
     });
+
+    var handleKeys = true;
+    $("input, textarea").focus(function(){ handleKeys = false; })
+                        .blur(function(){ handleKeys = true; });
     $(window).keypress(function(event) {
-        if(event.which == 106) { // j
-            event.preventDefault();
-            selectEntry(UI.selectedEntry + 1);
-            return;
+        if(handleKeys) {
+            if(event.which == 106) { // j
+                event.preventDefault();
+                selectEntry(UI.selectedEntry + 1);
+                return;
+            }
+            if(event.which == 107) { // k
+                event.preventDefault();
+                selectEntry(UI.selectedEntry - 1);
+                return;
+            }
+            if(event.which == 109) { // m
+                event.preventDefault();
+                var $entry = UI.entries[UI.selectedEntry];
+                if($entry)
+                    setUnread($entry.entry, !$entry.entry.unread);
+                return;
+            }
+            console.log("keypress: " + event.which);
         }
-        if(event.which == 107) { // k
-            event.preventDefault();
-            selectEntry(UI.selectedEntry - 1);
-            return;
-        }
-        if(event.which == 109) { // m
-            event.preventDefault();
-            var $entry = UI.entries[UI.selectedEntry];
-            if($entry)
-                setUnread($entry.entry, !$entry.entry.unread);
-            return;
-        }
-        console.log("keypress: " + event.which);
     });
 
     Chukchi.init();
