@@ -69,4 +69,8 @@ footer {
     text-align: center;
 }
 
+span.strike {
+    text-decoration: line-through;
+}
+
 // vi: sw=4:ts=4:et
