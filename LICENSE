@@ -56,3 +56,12 @@ as follows:
    Copyright (c) 2011-2012 Tim Wood
 
  (see COPYING.MIT for the full text of the MIT license)
+
+
+Chukchi distribution includes jquery.cookie, the jQuery cookie parsing plugin,
+licensed as follows:
+
+  Copyright 2013 Klaus Hartl
+  Released under the MIT license
+
+ (see COPYING.MIT for the full text of the MIT license)
