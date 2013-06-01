@@ -63,6 +63,12 @@ def update_feed(db, feed=None, url=None):
 
     pf_feed = pf.get('feed', None)
     if not pf_feed:
+# if a feed URL redirects to another one, which yields 304 Not Modified, the feedparser
+# would return empty feed object, a status code of the original redirect, and a "clever"
+# debug message. Let's handle it
+        if pf.get('debug_message', '').startswith('The feed has not changed'):
+            db.add(feed)
+            return feed
         LOG.error("update_feed: feed is missing from parsed feed %r: %r", feed, pf)
         return None
 
