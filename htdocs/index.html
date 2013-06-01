@@ -7,6 +7,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
   <link href="css/style.css" rel="stylesheet" media="screen">
   <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.cookie.js"></script>
   <script src="js/json2.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/moment.min.js"></script>
@@ -35,6 +36,8 @@
      <div class="masthead">
       <h2 class="muted">Chukchi <small>(not a reader)</small></h2>
      </div>
+
+     <div class="alert-container"></div>
 
      <div class="well loading">
       <h2 class="muted">Loading <img src="img/loader.gif" alt="loading..."></h2>
@@ -111,6 +114,10 @@
     </div>
     <div class="text">
     </div>
+   </div>
+   <div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <p></p>
    </div>
   </div>
  </body>

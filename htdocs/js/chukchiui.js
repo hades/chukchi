@@ -32,6 +32,13 @@ AllFeeds = {
     $menuitem: null
 };
 
+function showAlert(text) {
+    var $alert = $(".t .alert").clone();
+
+    $alert.find('p').html(text);
+    $alert.appendTo($(".alert-container"));
+}
+
 function handleAuth(data) {
     $(".loading").remove();
     $(".screen").hide();
@@ -289,6 +296,13 @@ $(document).ready(function(){
             console.log("keypress: " + event.which);
         }
     });
+
+    var openidError = $.cookie('openid_error');
+    if(openidError && openidError.length) {
+        $.cookie('openid_error', '');
+
+        showAlert("OpenID login failed: " + openidError);
+    }
 
     Chukchi.init();
 });

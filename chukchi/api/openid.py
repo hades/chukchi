@@ -17,6 +17,9 @@
 
 from __future__ import absolute_import
 
+import logging
+LOG = logging.getLogger(__name__)
+
 from time import time
 
 from openid.association import Association
@@ -105,8 +108,11 @@ def login():
         identity = request.form.get('openid')
         if identity:
             return openid.try_login(identity, ask_for=('nickname', 'email'))
-    session['openid_error'] = openid.fetch_error()
-    return redirect('/')
+    error = openid.fetch_error()
+    LOG.error("failed to login with openid: %s", error)
+    response = redirect('/')
+    response.set_cookie('openid_error', error)
+    return response
 
 @openid.after_login
 def makeuser(response):
