@@ -117,16 +117,18 @@ def update_feed(db, feed=None, url=None):
         existing_hashes = set([c.hash for c in existing_content])
         actual_hashes = set()
         for c in e.get('content', ()):
-            content = parse_content(c, entry=entry)
+            content = parse_content(c)
             actual_hashes.add(content.hash)
             if content.hash in existing_hashes:
                 continue
+            content.entry = entry
             existing_hashes.add(content.hash)
             db.add(content)
         if 'summary_detail' in e:
-            summary = parse_content(e.summary_detail, entry=entry, summary=True)
+            summary = parse_content(e.summary_detail, summary=True)
             actual_hashes.add(summary.hash)
             if summary.hash not in existing_hashes:
+                summary.entry = entry
                 db.add(summary)
         for old_content in existing_content:
             if old_content.hash not in actual_hashes:
