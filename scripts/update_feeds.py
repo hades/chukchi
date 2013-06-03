@@ -37,12 +37,13 @@ db_update = scoped_session(Session)
 
 for feed in db_search.query(Feed).filter( Feed.active == True,
                                           Feed.retrieved_at <= (now() - timedelta(**config.UPDATE_DELAY)) ):
+    feed_repr = repr(feed)
     try:
         db_search.expunge(feed)
         update_feed(db_update, feed=feed)
         db_update.commit()
     except Exception, e:
-        LOG.exception("failure updating feed %r", feed)
+        LOG.exception("failure updating feed %s", feed_repr)
     db_update.remove()
 
 # vi: sw=4:ts=4:et
