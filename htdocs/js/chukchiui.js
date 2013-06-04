@@ -208,6 +208,20 @@ function setUnread(entry, flag) {
                 : entry.$block.removeClass('unread');
 }
 
+function setShowUnread(flag, skipRedraw) {
+    if(flag) {
+        $("button.show-unread").addClass("btn-primary");
+        $("button.show-all").removeClass("btn-primary");
+    }
+    else {
+        $("button.show-all").addClass("btn-primary");
+        $("button.show-unread").removeClass("btn-primary");
+    }
+    UI.unread = flag;
+    if(!skipRedraw)
+        redrawEntries();
+}
+
 function setSource(source) {
     UI.source = source;
     $("#navbar li.active").removeClass('active');
@@ -224,6 +238,13 @@ function setupButtons() {
                 redrawEntries();
             });
     });
+    $("button.show-unread").click(function() {
+        setShowUnread(true);
+    });
+    $("button.show-all").click(function() {
+        setShowUnread(false);
+    });
+    setShowUnread(UI.unread, true);
 }
 
 function setupFeedAdder() {
