@@ -72,7 +72,7 @@ def update_feed(db, feed=None, url=None):
         LOG.error("update_feed: feed is missing from parsed feed %r: %r", feed, pf)
         return None
 
-    if not pf_feed.get('entries'):
+    if not pf.get('entries'):
         LOG.error("update_feed: entries are missing from parsed feed %r: %r", feed, pf)
         return None
 
