@@ -210,12 +210,12 @@ function setUnread(entry, flag) {
 
 function setShowUnread(flag, skipRedraw) {
     if(flag) {
-        $("button.show-unread").addClass("btn-primary");
-        $("button.show-all").removeClass("btn-primary");
+        $("button.show-unread").addClass("active");
+        $("button.show-all").removeClass("active");
     }
     else {
-        $("button.show-all").addClass("btn-primary");
-        $("button.show-unread").removeClass("btn-primary");
+        $("button.show-all").addClass("active");
+        $("button.show-unread").removeClass("active");
     }
     UI.unread = flag;
     if(!skipRedraw)
