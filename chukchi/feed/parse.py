@@ -99,6 +99,10 @@ def update_feed(db, feed=None, url=None):
         if not entry:
             entry = Entry(feed=feed)
             new_entry = True
+        else:
+            updated_date = make_datetime(e.get('updated_parsed'))
+            if updated_date and updated_date <= entry.updated:
+                continue
         entry.guid = guid[:MAX_URL_LEN]
         entry.link = e.get('link', '')[:MAX_URL_LEN]
         entry.title = e.get('title', '')[:MAX_ENTRYTITLE_LEN]
