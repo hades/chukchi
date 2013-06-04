@@ -72,6 +72,14 @@ def update_feed(db, feed=None, url=None):
         LOG.error("update_feed: feed is missing from parsed feed %r: %r", feed, pf)
         return None
 
+    if not pf_feed.get('entries'):
+        LOG.error("update_feed: entries are missing from parsed feed %r: %r", feed, pf)
+        return None
+
+    if 'html' in pf:
+        LOG.error("update_feed: parsed feed %r is an HTML: %r", feed, pf)
+        return None
+
     feed.title = pf_feed.get('title', '')[:MAX_FEEDNAME_LEN]
     feed.subtitle = pf_feed.get('subtitle', '')[:MAX_FEEDNAME_LEN]
     feed.link = pf_feed.get('link', '')[:MAX_URL_LEN]
