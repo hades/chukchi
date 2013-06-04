@@ -23,7 +23,7 @@ from flask import abort, g, redirect, request, session
 
 from . import app, db, needs_session
 from ..config import config
-from ..db.models import Content, Entry, Subscription, Unread, User
+from ..db.models import Content, Entry, Feed, Subscription, Unread, User
 from ..feed.discover import discover
 from ..feed.opml import get_feed_urls
 
@@ -158,6 +158,29 @@ def unread(entry_id):
         db.add(Unread(entry=entry, user=g.user))
     elif request.method == 'DELETE' and unread_obj:
         db.delete(unread_obj)
+    db.commit()
+    return {}
+
+@app.route('/unread/feed/<int:feed_id>', methods=('DELETE',))
+@needs_session
+def delete_unread_feed(feed_id):
+    feed = db.query(Feed).filter_by(id=feed_id).first()
+    if not feed:
+        abort(404)
+    req = db.query(Unread.id).filter_by(user=g.user)\
+                             .join(Entry)\
+                             .filter(Entry.feed == feed)
+    req = db.query(Unread).filter(Unread.id.in_(req))
+    req.delete(synchronize_session=False)
+    db.commit()
+    return {}
+
+@app.route('/unread', methods=('DELETE',))
+@needs_session
+def delete_unread():
+    req = db.query(Unread).filter_by(user=g.user)
+    LOG.debug("delete_unread: SQL %s", str(req))
+    req.delete()
     db.commit()
     return {}
 
