@@ -86,6 +86,25 @@ Chukchi.addFeeds = function(feeds, callback) {
     });
 };
 
+Chukchi.deleteUnreadAll = function(callback) {
+    this._ajax('unread', {
+        method: 'DELETE',
+        data: {},
+        success: callback
+    });
+};
+
+Chukchi.deleteUnreadFeed = function(feed, callback) {
+    var id = feed;
+    if(typeof(feed) == 'object')
+        id = feed.id;
+    this._ajax('unread/feed/' + id, {
+        method: 'DELETE',
+        data: {},
+        success: callback
+    });
+};
+
 Chukchi.getAllFeeds = function(start, count, unread, callback) {
     this._ajax('entries', {
         data: {start: start,

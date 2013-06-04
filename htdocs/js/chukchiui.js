@@ -29,6 +29,9 @@ AllFeeds = {
     get: function(start, count, unread, callback) {
         Chukchi.getAllFeeds(start, count, unread, callback);
     },
+    markRead: function(callback) {
+        Chukchi.deleteUnreadAll(callback);
+    },
     $menuitem: null
 };
 
@@ -145,6 +148,9 @@ function makeFeedSource(subscription) {
         unreadCount: subscription.unread_count,
         get: function(start, count, unread, callback) {
             Chukchi.getEntries(subscription.feed, start, count, unread, callback);
+        },
+        markRead: function(callback) {
+            Chukchi.deleteUnreadFeed(subscription.feed, callback);
         }
     };
 }
@@ -210,6 +216,16 @@ function setSource(source) {
     redrawEntries();
 }
 
+function setupButtons() {
+    $("button.mark-unread").click(function() {
+        if(UI.source && UI.source.markRead)
+            UI.source.markRead(function() {
+                updateSubscriptions();
+                redrawEntries();
+            });
+    });
+}
+
 function setupFeedAdder() {
     $("a.add-feed").click(function(event) {
         event.preventDefault();
@@ -259,6 +275,7 @@ $(document).ready(function(){
     Chukchi.auth(handleAuth);
 
     setupFeedAdder();
+    setupButtons();
     $(window).scroll(function() {
         if(!UI.scrollHandler)
             return;
