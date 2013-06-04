@@ -109,7 +109,7 @@ Chukchi.getAllFeeds = function(start, count, unread, callback) {
     this._ajax('entries', {
         data: {start: start,
                count: count,
-               unread: unread},
+               unread: unread? 'unread': ''},
         success: function(result) {
             if(result.entries.length)
                 callback(result.total, result.entries);
@@ -137,7 +137,7 @@ Chukchi.getEntries = function(feed, start, count, unread, callback) {
     this._ajax('entries/' + id, {
         data: {start: start,
                count: count,
-               unread: unread},
+               unread: unread? 'unread': ''},
         success: function(result) {
             if(result.entries.length)
                 callback(result.total, result.entries);
