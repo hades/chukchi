@@ -156,6 +156,7 @@ function makeFeedSource(subscription) {
 }
 
 function redrawEntries() {
+    $(".no-entries").hide();
     $(".page-header h1").hide();
     $(".page-header .loading").show();
     $(".main.screen .entry").remove();
@@ -209,7 +210,6 @@ function setUnread(entry, flag) {
 
 function setSource(source) {
     UI.source = source;
-    $(".no-entries").hide();
     $("#navbar li.active").removeClass('active');
     if(source.$menuitem)
         source.$menuitem.addClass('active');
