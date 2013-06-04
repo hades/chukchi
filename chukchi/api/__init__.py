@@ -39,6 +39,14 @@ db = scoped_session(Session)
 
 LOG = logging.getLogger(__name__)
 
+if not app.secret_key:
+    import os
+    LOG.critical("You don't have any secret_key set. This is quite bad.")
+    LOG.critical("I've generated one for you right now, try putting this in your config_local.py:")
+    LOG.critical('SECRET_KEY=%r', os.urandom(64))
+    if not app.debug:
+        raise RuntimeError("SECRET_KEY is not set in config_local.py")
+
 @app.teardown_request
 def shutdown_session(exception=None):
     db.remove()
