@@ -66,8 +66,18 @@ def query_entries(f):
         if start:
             query = query.filter(Entry.id < start)
         query = query.limit(count)
+        if unread:
+            entries = [e.to_json() for e in query]
+        else:
+            entries = []
+            for e in query:
+# TODO: replace with an aggregate query
+                this_entry = e.to_json()
+                this_entry['unread'] = bool(db.query(Unread).filter_by(user=g.user, entry=e).first())
+                LOG.debug("this entry %r", this_entry)
+                entries.append(this_entry)
         return {'total': total,
-                'entries': [e.to_json() for e in query]}
+                'entries': entries}
     return wrapped
 
 @app.route('/entries', methods=('GET',))
