@@ -21,6 +21,7 @@ DEBUG = False
 FROM_EMAIL = 'no-reply@chukchi.hades.name'
 SECRET_KEY = None
 SITE_URL = "http://127.0.0.1:5000"
+SOCKET_TIMEOUT = 15.
 UNREAD_ENTRIES_IN_NEW_FEEDS = 10
 UPDATE_DELAY = {'minutes': 30}
 

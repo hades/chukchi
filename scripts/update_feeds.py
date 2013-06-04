@@ -35,6 +35,10 @@ LOG = logging.getLogger(__name__)
 db_search = Session()
 db_update = scoped_session(Session)
 
+if config.SOCKET_TIMEOUT:
+    import socket
+    socket.setdefaulttimeout(config.SOCKET_TIMEOUT)
+
 for feed in db_search.query(Feed).filter( Feed.active == True,
                                           Feed.retrieved_at <= (now() - timedelta(**config.UPDATE_DELAY)) ):
     feed_repr = repr(feed)
