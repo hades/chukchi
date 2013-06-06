@@ -39,13 +39,15 @@ def update_feed(db, feed=None, url=None):
 
     LOG.debug("update_feed: %r %s", feed, url)
 
+    new_feed = False
     if not feed:
         feed = Feed(feed_url=url)
+        new_feed = True
     pf = feedparser.parse(feed.feed_url, etag=feed.http_etag, modified=feed.http_modified)
     status = pf.get('status', 555)
     LOG.debug("update_feed: status %s", status)
     if status not in (200, 301, 302, 304):
-        if status == 410:
+        if status == 410 and not new_feed:
             feed.active = False
             db.add(feed)
         LOG.error("update_feed: HTTP error %s on feed url %s", status, feed.feed_url)
@@ -54,7 +56,7 @@ def update_feed(db, feed=None, url=None):
     feed.retrieved_at = now()
 
     if status == 304: # not modified
-        db.add(feed)
+        if not new_feed: db.add(feed)
         return feed
 
     if status == 301:
@@ -67,7 +69,7 @@ def update_feed(db, feed=None, url=None):
 # would return empty feed object, a status code of the original redirect, and a "clever"
 # debug message. Let's handle it
         if pf.get('debug_message', '').startswith('The feed has not changed'):
-            db.add(feed)
+            if not new_feed: db.add(feed)
             return feed
         LOG.error("update_feed: feed is missing from parsed feed %r: %r", feed, pf)
         return None
