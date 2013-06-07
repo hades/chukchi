@@ -39,6 +39,9 @@ a {
     padding-left: 20px;
     font-size: 12px;
 }
+.entry .header .link {
+    padding-left: 20px;
+}
 
 .entry.selected {
     border: 1px solid #ddd;

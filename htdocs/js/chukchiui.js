@@ -104,6 +104,15 @@ function makeEntryBlock(entry) {
     $entry.find('.title').html(entry.title);
     $entry.find('.date').html(moment(entry.published).fromNow());
 
+    var $link = $entry.find('.link a');
+    if( entry.link && entry.link.length ) {
+        $link.attr('href', entry.link)
+             .attr('target', '_blank');
+    }
+    else {
+        $link.remove();
+    }
+
     $entry.click(function(){
         selectEntry($entry);
     });
@@ -329,6 +338,13 @@ $(document).ready(function(){
                 var $entry = UI.entries[UI.selectedEntry];
                 if($entry)
                     setUnread($entry.entry, !$entry.entry.unread);
+                return;
+            }
+            if(event.which == 118) { // v
+                event.preventDefault();
+                var $entry = UI.entries[UI.selectedEntry];
+                if($entry && $entry.entry && $entry.entry.link)
+                    window.open($entry.entry.link);
                 return;
             }
             console.log("keypress: " + event.which);

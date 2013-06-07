@@ -85,7 +85,8 @@ Sure:
 
  * j -- go to next entry in the current list,
  * k -- go to previous entry in the current list,
- * m -- mark the currently selected entry as read/unread.
+ * m -- mark the currently selected entry as read/unread,
+ * v -- open the link of the currently selected entry.
 
 
 Is that it?
