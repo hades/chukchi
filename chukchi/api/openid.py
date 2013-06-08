@@ -33,6 +33,7 @@ from . import app, db
 
 from ..db.models import OpenIDAssociation, OpenIDNonce, User
 from ..db.models import MAX_OPENID_SALT_LEN, MAX_OPENID_SERVER_URL_LEN, MAX_USERNAME_LEN
+from ..utils import now
 
 class SQLAlchemyStore(OpenIDStore):
     def __init__(self, db):
@@ -101,7 +102,11 @@ openid = OpenID(app, store_factory=lambda: SQLAlchemyStore(db))
 def login():
     if app.debug and app.config.get('DEBUG_OVERRIDE_USER'):
         g.user = db.query(User).filter_by(id=app.config.get('DEBUG_OVERRIDE_USER')).first()
-        if g.user: session['openid'] = g.user.openid
+        if g.user:
+            session['openid'] = g.user.openid
+            g.user.last_login = now()
+            db.add(g.user)
+            db.commit()
     if g.user is not None:
         return redirect('/')
     if request.method == 'POST':
