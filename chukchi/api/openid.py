@@ -104,10 +104,10 @@ def login():
         g.user = db.query(User).filter_by(id=app.config.get('DEBUG_OVERRIDE_USER')).first()
         if g.user:
             session['openid'] = g.user.openid
-            g.user.last_login = now()
-            db.add(g.user)
-            db.commit()
     if g.user is not None:
+        g.user.last_login = now()
+        db.add(g.user)
+        db.commit()
         return redirect('/')
     if request.method == 'POST':
         identity = request.form.get('openid')
