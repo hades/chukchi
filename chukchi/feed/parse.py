@@ -39,6 +39,10 @@ def update_feed(db, feed=None, url=None):
 
     LOG.debug("update_feed: %r %s", feed, url)
 
+    if url and len(url) > MAX_URL_LEN:
+        LOG.error("feed url %s exceeds maximum possible length", url)
+        return None
+
     new_feed = False
     if not feed:
         feed = Feed(feed_url=url)
