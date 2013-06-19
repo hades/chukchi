@@ -56,7 +56,7 @@ class Feed(Base):
     title = Column(String(MAX_FEEDNAME_LEN), nullable=False)
     subtitle = Column(String(MAX_FEEDNAME_LEN), nullable=False)
     link = Column(String(MAX_URL_LEN), nullable=False)
-    feed_url = Column(String(MAX_URL_LEN), nullable=False)
+    feed_url = Column(Text, nullable=False)
     http_etag = Column(String(MAX_ETAG_MODIFIED_LEN))
     http_modified = Column(String(MAX_ETAG_MODIFIED_LEN))
     added = Column(DateTime(timezone=True), default=datetime.now)
