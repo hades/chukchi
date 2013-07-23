@@ -126,6 +126,7 @@ class Content(Base):
                 'hash': self.hash,
                 'expired': self.expired,
                 'summary': self.summary,
+                'length': len(self.data),
         }
 
 class Subscription(Base):
