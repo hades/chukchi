@@ -35,6 +35,22 @@ AllFeeds = {
     $menuitem: null
 };
 
+function bestContent(contents) {
+    var candidates = $.map(contents, function(c) {
+        var score = -Math.log(c.length + 1);
+
+        if(c.expired) score += 1000;
+        if(c.summary) score += 100;
+
+        return {content: c,
+                score: score};
+    });
+
+    return candidates.sort(function(a, b){
+        return a.score - b.score;
+    })[0].content;
+}
+
 function showAlert(text) {
     var $alert = $(".t .alert").clone();
 
@@ -120,7 +136,7 @@ function makeEntryBlock(entry) {
     if(entry.unread)
         $entry.addClass('unread');
 
-    Chukchi.getContent(entry.content[0], function(content) {
+    Chukchi.getContent(bestContent(entry.content), function(content) {
         // TODO handle non-html, handle summary and expired content
         $entry.find('.text').html(content.data);
     });
