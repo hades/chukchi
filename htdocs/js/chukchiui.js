@@ -205,6 +205,9 @@ function selectEntry(entry) {
         index = UI.entries.indexOf(entry);
     }
 
+    if(UI.selectedEntry == index)
+        return; // do nothing, the required entry is already selected
+
     $(".main.screen .entry.selected").removeClass('selected');
 
     if(UI.entries.length - index <= 3)
