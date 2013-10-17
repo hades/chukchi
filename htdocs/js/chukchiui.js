@@ -210,8 +210,6 @@ function selectEntry(entry) {
 
     $(".main.screen .entry.selected").removeClass('selected');
 
-    if(UI.entries.length - index <= 3)
-        loadMoreEntries(10);
     if(index < 0 || index >= UI.entries.length)
     {
         UI.selectedEntry = -1;
