@@ -19,6 +19,7 @@
 
 UI = {
     entries: [],
+    operationsInProgress: [],
     selectedEntry: -1,
     source: null,
     unread: true
@@ -83,12 +84,22 @@ function handleAuth(data) {
 }
 
 function loadMoreEntries(count) {
-    UI.scrollHandler = null;
-
     var start = UI.nextStartOffset;
     var token = UI.token;
 
+    var operation_id = JSON.stringify(["loadEntries", start, token, count, UI.unread]);
+    if(UI.operationsInProgress.indexOf(operation_id) >= 0)
+    {
+        console.log("operation " + operation_id + " already in progress.");
+        return;
+    }
+
+    UI.operationsInProgress.push(operation_id);
+
     UI.source.get(start, count, UI.unread, function(total, entries) {
+        var opindex = UI.operationsInProgress.indexOf(operation_id);
+        if(opindex >= 0) UI.operationsInProgress.splice(opindex, 1);
+
         if(token != UI.token)
             return;
 
@@ -96,7 +107,6 @@ function loadMoreEntries(count) {
 
         if(!entries) {
             console.log("no more entries");
-            UI.scrollHandler = null;
             return;
         }
 
@@ -108,7 +118,6 @@ function loadMoreEntries(count) {
             UI.entries.push($entry);
         });
 
-        UI.scrollHandler = function(){ loadMoreEntries(10); };
         $(window).scroll();
     });
 }
@@ -193,6 +202,7 @@ function redrawEntries() {
 
     UI.nextStartOffset = 0;
     loadMoreEntries(10);
+    UI.scrollHandler = function(){ loadMoreEntries(10); }
 }
 
 function reportError(err) {
@@ -210,6 +220,8 @@ function selectEntry(entry) {
 
     $(".main.screen .entry.selected").removeClass('selected');
 
+    if(UI.entries.length - index <= 3)
+        loadMoreEntries(10);
     if(index < 0 || index >= UI.entries.length)
     {
         UI.selectedEntry = -1;
