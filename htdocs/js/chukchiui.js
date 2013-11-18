@@ -37,6 +37,8 @@ AllFeeds = {
 };
 
 function bestContent(contents) {
+    if(!contents.length) return null;
+
     var candidates = $.map(contents, function(c) {
         var score = -Math.log(c.length + 1);
 
@@ -145,10 +147,13 @@ function makeEntryBlock(entry) {
     if(entry.unread)
         $entry.addClass('unread');
 
-    Chukchi.getContent(bestContent(entry.content), function(content) {
-        // TODO handle non-html, handle summary and expired content
-        $entry.find('.text').html(content.data);
-    });
+    if(entry.content.length)
+        Chukchi.getContent(bestContent(entry.content), function(content) {
+            // TODO handle non-html, handle summary and expired content
+            $entry.find('.text').html(content.data);
+        });
+    else
+        $entry.find('.text').html('This entry does not have any content');
 
     $entry.entry = entry;
     entry.$block = $entry;
